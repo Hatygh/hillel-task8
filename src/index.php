@@ -1,3 +1,62 @@
+<?php
+
+require_once 'validation.php';
+
+$errors = [
+    'email' => array(),
+    'password' => array(),
+    'passwordConfirmation' => array(),
+    'birthday' => array(),
+    'score' => array(),
+    'website' => array(),
+];
+
+if ($_POST) {
+    $email = $_POST['email'];
+    if (!not_empty_validator($email))
+        $errors['email'][] = 'Email required';
+    elseif (!email_validator($email))
+        $errors['email'][] = 'Email should be valid email address';
+
+    $password = $_POST['password'];
+    if (!not_empty_validator($password))
+        $errors['password'][] = 'Password required';
+    elseif (string_length_validator($password) < 8)
+        $errors['password'][] = 'Password should contain more than 8 symbols';
+
+    $passwordConfirmation = $_POST['passwordConfirmation'];
+    if (!not_empty_validator($passwordConfirmation))
+        $errors['passwordConfirmation'][] = 'Password confirmation required';
+    elseif (string_length_validator($passwordConfirmation) < 8)
+        $errors['passwordConfirmation'][] = 'Password should contain more than 8 symbols';
+    elseif (!identical_validator($password, $passwordConfirmation))
+        $errors['passwordConfirmation'][] = 'Passwords dont match';
+
+    $sex = $_POST['sex'];
+    if (!in_array($sex, [0, 1], 1))
+        $errors['sex'][] = 'Magic happened';
+
+    $birthdate = $_POST['birthdate'];
+    if (!not_empty_validator($birthdate))
+        $errors['birthday'][] = 'Birthday required';
+    elseif (!date_validator($birthdate))
+        $errors['birthday'][] = 'When you was born?';
+
+    $score = $_POST['score'];
+    if (!digit_validator($score))
+        $errors['score'][] = 'Score should be a number';
+    elseif (!between_validator($score, [0, 100]))
+        $errors['score'][] = 'Score should fit an interval between 0 and 100';
+
+    $website = $_POST['website'];
+    if (!not_empty_validator($website))
+        $errors['website'][] = 'Website required';
+    elseif (!uri_validator($website))
+        $errors['website'][] = 'Website should be a valid URL address';
+}
+
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
